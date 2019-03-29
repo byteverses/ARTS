@@ -1,0 +1,2 @@
+# ARTS
+Weekly ARTS Blog
