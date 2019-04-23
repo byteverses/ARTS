@@ -8,33 +8,38 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-class Solution {
-    public List<List<Integer>> permute(int[] nums) {
-        List<List<Integer>> results = new LinkedList<>();
-        Arrays.sort(nums);
-        this.backTracking(results, new LinkedList<>(), nums);
+/**
+ * https://leetcode.com/problems/permutations/
+ */
+public class Permutations {
+    
+    static class Solution {
+        public List<List<Integer>> permute(int[] nums) {
+            List<List<Integer>> results = new LinkedList<>();
+//            Arrays.sort(nums);
+            this.backTracking(results, new LinkedList<>(), nums);
+            
+            return results;
+        }
         
-        return results;
+        private void backTracking(List<List<Integer>> results,
+                                  LinkedList<Integer> tmpResults,
+                                  int[] nums) {
+            if(tmpResults.size() == nums.length) {
+                results.add(new ArrayList<>(tmpResults));
+            }
+            for(int i = 0; i < nums.length; i++) {
+                int num = nums[i];
+                if(tmpResults.contains(num)) {
+                    continue;
+                }
+                tmpResults.add(num);
+                this.backTracking(results, tmpResults, nums);
+                tmpResults.removeLast();
+            }
+        }
     }
     
-    private void backTracking(List<List<Integer>> results,
-                              LinkedList<Integer> tmpResults,
-                              int[] nums) {
-        if(tmpResults.size() == nums.length) {
-            results.add(new ArrayList<>(tmpResults));
-        }
-        for(int i = 0; i < nums.length; i++) {
-            if(tmpResults.contains(nums[i])) {
-                continue;
-            }
-            tmpResults.add(nums[i]);
-            this.backTracking(results, tmpResults, nums);
-            tmpResults.removeLast();
-        }
-    }
-}
-
-public class Permutations {
     public static int[] stringToIntegerArray(String input) {
         input = input.trim();
         input = input.substring(1, input.length() - 1);

@@ -4,35 +4,39 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
 /**
- * https://leetcode.com/problems/subsets/
+ * https://leetcode.com/problems/subsets-ii/
  */
-public class Subsets {
+public class SubsetsWithDuplicate {
     
     static class Solution {
-    
-        public List<List<Integer>> subsets(int[] nums) {
+        
+        public List<List<Integer>> subsetsWithDup(int[] nums) {
             List<List<Integer>> results = new LinkedList<>();
-            // Arrays.sort(nums);
+            Arrays.sort(nums);
             this.backTracking(results, new LinkedList<>(), nums, 0);
             return results;
         }
-    
+        
         private void backTracking(List<List<Integer>> results,
                                   LinkedList<Integer> tmpResults,
                                   int[] nums,
                                   int startIdx) {
             results.add(new ArrayList<>(tmpResults));
-        
+            
             for(int i = startIdx; i < nums.length; i++) {
+                if(i > startIdx && nums[i] == nums[i - 1]) {
+                    continue;
+                }
                 tmpResults.add(nums[i]);
                 this.backTracking(results, tmpResults, nums, i + 1);
                 tmpResults.removeLast();
             }
-        
+            
         }
     }
     
@@ -86,7 +90,7 @@ public class Subsets {
         while((line = in.readLine()) != null) {
             int[] nums = stringToIntegerArray(line);
             
-            List<List<Integer>> ret = new Solution().subsets(nums);
+            List<List<Integer>> ret = new Solution().subsetsWithDup(nums);
             
             String out = int2dListToString(ret);
             
