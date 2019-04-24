@@ -1,43 +1,54 @@
 package bt;
 
-class Solution {
-    public List<List<Integer>> combinationSum(int[] candidates, int target) {
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
+/**
+ * https://leetcode.com/problems/combination-sum/
+ */
+public class CombinationSum {
+    
+    static class Solution {
+        public List<List<Integer>> combinationSum(int[] candidates, int target) {
+            
+            List<List<Integer>> results = new ArrayList<>();
+            
+            this.backTracking(results, new LinkedList<>(), target, candidates, 0);
+            
+            return results;
+        }
         
-        List<List<Integer>> results = new ArrayList<>();
-        
-        this.backTracking(results, new LinkedList<>(), target, candidates, 0);
-        
-        return results;
+        private void backTracking(List<List<Integer>> results,
+                                  LinkedList<Integer> tmpResults,
+                                  int target,
+                                  int[] candidates,
+                                  int startIdx) {
+            if(target == 0) {
+                results.add(new ArrayList<>(tmpResults));
+            }
+            
+            for(int i = startIdx; i < candidates.length; i++) {
+                if(target < candidates[i]) {
+                    continue;
+                }
+                tmpResults.add(candidates[i]);
+                // Here use i, not i+1, so we can use same item several times.
+                this.backTracking(results,
+                                  tmpResults,
+                                  target - candidates[i],
+                                  candidates,
+                                  i);
+                
+                tmpResults.removeLast();
+                
+            }
+        }
     }
     
-    private void backTracking(List<List<Integer>> results,
-                              LinkedList<Integer> tmpResults,
-                              int target,
-                              int[] candidates,
-                              int startIdx) {
-        if(target == 0) {
-            results.add(new ArrayList<>(tmpResults));
-        }
-        
-        for(int i = startIdx; i < candidates.length; i++) {
-            if(target < candidates[i]) {
-                continue;
-            }
-            tmpResults.add(candidates[i]);
-            // Here use i, not i+1, so we can use same item several times.
-            this.backTracking(results, 
-                              tmpResults, 
-                              target - candidates[i], 
-                              candidates, 
-                              i);
-            
-            tmpResults.removeLast();
-            
-        }
-    }
-}
-
-public class MainClass {
     public static int[] stringToIntegerArray(String input) {
         input = input.trim();
         input = input.substring(1, input.length() - 1);

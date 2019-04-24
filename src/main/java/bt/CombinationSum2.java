@@ -4,19 +4,20 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
 /**
- * https://leetcode.com/problems/combination-sum/
+ * https://leetcode.com/problems/combination-sum-ii/
  */
-public class CombinationSum {
+public class CombinationSum2 {
     
     static class Solution {
         public List<List<Integer>> combinationSum(int[] candidates, int target) {
             
             List<List<Integer>> results = new ArrayList<>();
-            
+            Arrays.sort(candidates);
             this.backTracking(results, new LinkedList<>(), target, candidates, 0);
             
             return results;
@@ -32,11 +33,11 @@ public class CombinationSum {
             }
             
             for(int i = startIdx; i < candidates.length; i++) {
-                if(target < candidates[i]) {
+                if(target < candidates[i] || (i>startIdx && candidates[i]==candidates[i-1])) {
                     continue;
                 }
                 tmpResults.add(candidates[i]);
-                // Here use i, not i+1, so we can use same item several times.
+                // Here use i + 1, not i, so we can use candidate only once.
                 this.backTracking(results,
                                   tmpResults,
                                   target - candidates[i],

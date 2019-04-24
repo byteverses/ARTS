@@ -7,7 +7,10 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-public class MainClass {
+/**
+ * https://leetcode.com/problems/combination-sum-iii/
+ */
+public class CombinationSum3 {
     static class Solution {
         public List<List<Integer>> combinationSum3(int k, int n) {
         
