@@ -1,4 +1,4 @@
-package bt;
+package backtracking;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -8,51 +8,55 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * https://leetcode.com/problems/combination-sum-iii/
+ * https://leetcode.com/problems/subsets/
  */
-public class CombinationSum3 {
+public class Subsets {
+    
     static class Solution {
-        public List<List<Integer>> combinationSum3(int k, int n) {
-        
-            List<List<Integer>> results = new ArrayList<>();
-        
-            this.backTracking(results, new LinkedList<>(), k, n, 1);
-        
+    
+        public List<List<Integer>> subsets(int[] nums) {
+            List<List<Integer>> results = new LinkedList<>();
+            // Arrays.sort(nums);
+            this.backTracking(results, new LinkedList<>(), nums, 0);
             return results;
         }
     
         private void backTracking(List<List<Integer>> results,
                                   LinkedList<Integer> tmpResults,
-                                  int count,
-                                  int target,
+                                  int[] nums,
                                   int startIdx) {
-            if(target == 0 && count == 0) {
-                results.add(new ArrayList<>(tmpResults));
+            results.add(new ArrayList<>(tmpResults));
+        
+            for(int i = startIdx; i < nums.length; i++) {
+                tmpResults.add(nums[i]);
+                this.backTracking(results, tmpResults, nums, i + 1);
+                tmpResults.removeLast();
             }
         
-            for(int i = startIdx; i < 10; i++) {
-                if(target < i || count <= 0) {
-                    continue;
-                }
-                tmpResults.add(i);
-                this.backTracking(results,
-                                  tmpResults,
-                                  count-1,
-                                  target - i,
-                                  i+1);
-            
-                tmpResults.removeLast();
-            
-            }
         }
     }
     
+    public static int[] stringToIntegerArray(String input) {
+        input = input.trim();
+        input = input.substring(1, input.length() - 1);
+        if(input.length() == 0) {
+            return new int[0];
+        }
+        
+        String[] parts = input.split(",");
+        int[] output = new int[parts.length];
+        for(int index = 0; index < parts.length; index++) {
+            String part = parts[index].trim();
+            output[index] = Integer.parseInt(part);
+        }
+        return output;
+    }
     
     public static String integerArrayListToString(List<Integer> nums, int length) {
-        if (length == 0) {
+        if(length == 0) {
             return "[]";
         }
-    
+        
         String result = "";
         for(int index = 0; index < length; index++) {
             Integer number = nums.get(index);
@@ -67,11 +71,11 @@ public class CombinationSum3 {
     
     public static String int2dListToString(List<List<Integer>> nums) {
         StringBuilder sb = new StringBuilder("[");
-        for (List<Integer> list: nums) {
+        for(List<Integer> list : nums) {
             sb.append(integerArrayListToString(list));
             sb.append(",");
         }
-    
+        
         sb.setCharAt(sb.length() - 1, ']');
         return sb.toString();
     }
@@ -79,16 +83,15 @@ public class CombinationSum3 {
     public static void main(String[] args) throws IOException {
         BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
         String line;
-        while ((line = in.readLine()) != null) {
-            int k = Integer.parseInt(line);
-            line = in.readLine();
-            int n = Integer.parseInt(line);
+        while((line = in.readLine()) != null) {
+            int[] nums = stringToIntegerArray(line);
             
-            List<List<Integer>> ret = new Solution().combinationSum3(k, n);
+            List<List<Integer>> ret = new Solution().subsets(nums);
             
             String out = int2dListToString(ret);
             
             System.out.print(out);
         }
     }
+    
 }

@@ -1,70 +1,52 @@
-package bt;
+package backtracking;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
 /**
- * https://leetcode.com/problems/combination-sum-ii/
+ * https://leetcode.com/problems/combination-sum-iii/
  */
-public class CombinationSum2 {
-    
+public class CombinationSum3 {
     static class Solution {
-        public List<List<Integer>> combinationSum(int[] candidates, int target) {
-            
+        public List<List<Integer>> combinationSum3(int k, int n) {
+        
             List<List<Integer>> results = new ArrayList<>();
-            Arrays.sort(candidates);
-            this.backTracking(results, new LinkedList<>(), target, candidates, 0);
-            
+        
+            this.backTracking(results, new LinkedList<>(), k, n, 1);
+        
             return results;
         }
-        
+    
         private void backTracking(List<List<Integer>> results,
                                   LinkedList<Integer> tmpResults,
+                                  int count,
                                   int target,
-                                  int[] candidates,
                                   int startIdx) {
-            if(target == 0) {
+            if(target == 0 && count == 0) {
                 results.add(new ArrayList<>(tmpResults));
             }
-            
-            for(int i = startIdx; i < candidates.length; i++) {
-                if(target < candidates[i] || (i>startIdx && candidates[i]==candidates[i-1])) {
+        
+            for(int i = startIdx; i < 10; i++) {
+                if(target < i || count <= 0) {
                     continue;
                 }
-                tmpResults.add(candidates[i]);
-                // Here use i + 1, not i, so we can use candidate only once.
+                tmpResults.add(i);
                 this.backTracking(results,
                                   tmpResults,
-                                  target - candidates[i],
-                                  candidates,
-                                  i);
-                
+                                  count-1,
+                                  target - i,
+                                  i+1);
+            
                 tmpResults.removeLast();
-                
+            
             }
         }
     }
     
-    public static int[] stringToIntegerArray(String input) {
-        input = input.trim();
-        input = input.substring(1, input.length() - 1);
-        if (input.length() == 0) {
-          return new int[0];
-        }
-    
-        String[] parts = input.split(",");
-        int[] output = new int[parts.length];
-        for(int index = 0; index < parts.length; index++) {
-            String part = parts[index].trim();
-            output[index] = Integer.parseInt(part);
-        }
-        return output;
-    }
     
     public static String integerArrayListToString(List<Integer> nums, int length) {
         if (length == 0) {
@@ -98,11 +80,11 @@ public class CombinationSum2 {
         BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
         String line;
         while ((line = in.readLine()) != null) {
-            int[] candidates = stringToIntegerArray(line);
+            int k = Integer.parseInt(line);
             line = in.readLine();
-            int target = Integer.parseInt(line);
+            int n = Integer.parseInt(line);
             
-            List<List<Integer>> ret = new Solution().combinationSum(candidates, target);
+            List<List<Integer>> ret = new Solution().combinationSum3(k, n);
             
             String out = int2dListToString(ret);
             

@@ -1,4 +1,4 @@
-package bt;
+package backtracking;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,37 +9,34 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * https://leetcode.com/problems/permutations-ii/
+ * https://leetcode.com/problems/subsets-ii/
  */
-public class PermutationsWithDuplicate {
+public class SubsetsWithDuplicate {
     
     static class Solution {
-        public List<List<Integer>> permuteUnique(int[] nums) {
+        
+        public List<List<Integer>> subsetsWithDup(int[] nums) {
             List<List<Integer>> results = new LinkedList<>();
             Arrays.sort(nums);
-            this.backTracking(results, new LinkedList<>(), nums, new boolean[nums.length]);
-            
+            this.backTracking(results, new LinkedList<>(), nums, 0);
             return results;
         }
         
         private void backTracking(List<List<Integer>> results,
                                   LinkedList<Integer> tmpResults,
                                   int[] nums,
-                                  boolean[] used) {
-            if(tmpResults.size() == nums.length) {
-                results.add(new ArrayList<>(tmpResults));
-            }
-            for(int i = 0; i < nums.length; i++) {
-                if(used[i] || (i > 0 && nums[i] == nums[i - 1] && !used[i - 1])) {
+                                  int startIdx) {
+            results.add(new ArrayList<>(tmpResults));
+            
+            for(int i = startIdx; i < nums.length; i++) {
+                if(i > startIdx && nums[i] == nums[i - 1]) {
                     continue;
                 }
                 tmpResults.add(nums[i]);
-                used[i] = true;
-                this.backTracking(results, tmpResults, nums, used);
-                
+                this.backTracking(results, tmpResults, nums, i + 1);
                 tmpResults.removeLast();
-                used[i] = false;
             }
+            
         }
     }
     
@@ -93,11 +90,12 @@ public class PermutationsWithDuplicate {
         while((line = in.readLine()) != null) {
             int[] nums = stringToIntegerArray(line);
             
-            List<List<Integer>> ret = new Solution().permuteUnique(nums);
+            List<List<Integer>> ret = new Solution().subsetsWithDup(nums);
             
             String out = int2dListToString(ret);
             
             System.out.print(out);
         }
     }
+    
 }

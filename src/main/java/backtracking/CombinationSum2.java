@@ -1,4 +1,4 @@
-package bt;
+package backtracking;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,33 +9,43 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * https://leetcode.com/problems/permutations/
+ * https://leetcode.com/problems/combination-sum-ii/
  */
-public class Permutations {
+public class CombinationSum2 {
     
     static class Solution {
-        public List<List<Integer>> permute(int[] nums) {
-            List<List<Integer>> results = new LinkedList<>();
-//            Arrays.sort(nums);
-            this.backTracking(results, new LinkedList<>(), nums);
+        public List<List<Integer>> combinationSum(int[] candidates, int target) {
+            
+            List<List<Integer>> results = new ArrayList<>();
+            Arrays.sort(candidates);
+            this.backTracking(results, new LinkedList<>(), target, candidates, 0);
             
             return results;
         }
         
         private void backTracking(List<List<Integer>> results,
                                   LinkedList<Integer> tmpResults,
-                                  int[] nums) {
-            if(tmpResults.size() == nums.length) {
+                                  int target,
+                                  int[] candidates,
+                                  int startIdx) {
+            if(target == 0) {
                 results.add(new ArrayList<>(tmpResults));
             }
-            for(int i = 0; i < nums.length; i++) {
-                int num = nums[i];
-                if(tmpResults.contains(num)) {
+            
+            for(int i = startIdx; i < candidates.length; i++) {
+                if(target < candidates[i] || (i>startIdx && candidates[i]==candidates[i-1])) {
                     continue;
                 }
-                tmpResults.add(num);
-                this.backTracking(results, tmpResults, nums);
+                tmpResults.add(candidates[i]);
+                // Here use i + 1, not i, so we can use candidate only once.
+                this.backTracking(results,
+                                  tmpResults,
+                                  target - candidates[i],
+                                  candidates,
+                                  i);
+                
                 tmpResults.removeLast();
+                
             }
         }
     }
@@ -88,9 +98,11 @@ public class Permutations {
         BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
         String line;
         while ((line = in.readLine()) != null) {
-            int[] nums = stringToIntegerArray(line);
+            int[] candidates = stringToIntegerArray(line);
+            line = in.readLine();
+            int target = Integer.parseInt(line);
             
-            List<List<Integer>> ret = new Solution().permute(nums);
+            List<List<Integer>> ret = new Solution().combinationSum(candidates, target);
             
             String out = int2dListToString(ret);
             
