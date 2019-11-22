@@ -1,4 +1,4 @@
-package bst;
+package tree;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,9 +7,37 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 /**
- * https://leetcode.com/problems/range-sum-of-bst
+ * https://leetcode.com/problems/path-sum-iii/
+ *
+ * You are given a binary tree in which each node contains an integer value.
+ *
+ * Find the number of paths that sum to a given value.
+ *
+ * The path does not need to start or end at the root or a leaf,
+ * but it must go downwards (traveling only from parent nodes to child nodes).
+ *
+ * The tree has no more than 1,000 nodes and the values are in the range -1,000,000 to 1,000,000.
+ *
+ * Example:
+ *
+ * root = [10,5,-3,3,2,null,11,3,-2,null,1], sum = 8
+ *
+ *       10
+ *      /  \
+ *     5   -3
+ *    / \    \
+ *   3   2   11
+ *  / \   \
+ * 3  -2   1
+ *
+ * Return 3. The paths that sum to 8 are:
+ *
+ * 1.  5 -> 3
+ * 2.  5 -> 2 -> 1
+ * 3. -3 -> 11
  */
-public class RangeSumOfBst {
+public class BinaryTreePathSum3 {
+    
     
     /**
      * Definition for a binary tree node.
@@ -20,7 +48,8 @@ public class RangeSumOfBst {
      *     TreeNode(int x) { val = x; }
      * }
      */
-    public static class TreeNode {
+
+    static class TreeNode {
         int      val;
         TreeNode left;
         TreeNode right;
@@ -30,22 +59,31 @@ public class RangeSumOfBst {
     
     static class Solution {
         
-        public int rangeSumBST(TreeNode root, int L, int R) {
-            int sum = 0;
-            if(L <= root.val && root.val <= R) {
-                sum += root.val;
+        public int pathSum(TreeNode root, int sum) {
+            if(root == null) {
+                return 0;
             }
             
-            if(root.left != null && L <= root.val) {
-                sum += rangeSumBST(root.left, L, R);
-            }
-            if(root.right != null && root.val <= R) {
-                sum += rangeSumBST(root.right, L, R);
-            }
+            //
+            int rootCount = this.dfsPathSum(root, sum);
             
-            return sum;
+            int leftCount = this.pathSum(root.left, sum);
+            int rightCount = this.pathSum(root.right, sum);
+            
+            return rootCount + leftCount + rightCount;
         }
+        
+        public int dfsPathSum(TreeNode root, int sum) {
+            if(root == null) {
+                return 0;
+            }
+            
+            return ((root.val == sum) ? 1 : 0) +
+                   (dfsPathSum(root.left, sum - root.val) + dfsPathSum(root.right, sum - root.val));
+        }
+        
     }
+    
     
     public static TreeNode stringToTreeNode(String input) {
         input = input.trim();
@@ -53,21 +91,21 @@ public class RangeSumOfBst {
         if (input.length() == 0) {
             return null;
         }
-        
+    
         String[] parts = input.split(",");
         String item = parts[0];
         TreeNode root = new TreeNode(Integer.parseInt(item));
         Queue<TreeNode> nodeQueue = new LinkedList<>();
         nodeQueue.add(root);
-        
+    
         int index = 1;
         while(!nodeQueue.isEmpty()) {
             TreeNode node = nodeQueue.remove();
-            
+    
             if (index == parts.length) {
                 break;
             }
-            
+    
             item = parts[index++];
             item = item.trim();
             if (!item.equals("null")) {
@@ -75,11 +113,11 @@ public class RangeSumOfBst {
                 node.left = new TreeNode(leftNumber);
                 nodeQueue.add(node.left);
             }
-            
+    
             if (index == parts.length) {
                 break;
             }
-            
+    
             item = parts[index++];
             item = item.trim();
             if (!item.equals("null")) {
@@ -97,11 +135,9 @@ public class RangeSumOfBst {
         while ((line = in.readLine()) != null) {
             TreeNode root = stringToTreeNode(line);
             line = in.readLine();
-            int L = Integer.parseInt(line);
-            line = in.readLine();
-            int R = Integer.parseInt(line);
+            int sum = Integer.parseInt(line);
             
-            int ret = new Solution().rangeSumBST(root, L, R);
+            int ret = new Solution().pathSum(root, sum);
             
             String out = String.valueOf(ret);
             
